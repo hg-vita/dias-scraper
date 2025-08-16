@@ -1,0 +1,27 @@
+name: Daily Drishti Scraper
+
+on:
+  schedule:
+    - cron: "0 4 * * *"   # Runs every day at 4:00 UTC (9:30 AM IST)
+  workflow_dispatch:        # Allows manual trigger
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        env:
+          GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+        run: python drishti_scraper.py
